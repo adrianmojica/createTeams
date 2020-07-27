@@ -51,7 +51,7 @@ export default class Template extends Component {
                                 {currentCustomer.lastname}
                             </div>
                             <div className="form-group">
-                                {currentCustomer.last_order}
+                                {currentCustomer.team}
                             </div>
                     </div>
                 ) : (

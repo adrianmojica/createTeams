@@ -12,12 +12,14 @@ export default class CustomerList extends Component{
         this.refreshList = this.refreshList.bind(this);
         this.setActiveCustomer = this.setActiveCustomer.bind(this);
         this.searchName = this.searchName.bind(this);
+        this.onChangeSelect = this.onChangeSelect.bind(this);
 
         this.state = {
             customers: [],
             currentCustomer: null,
             currentIndex: -1,
-            searchName: ""
+            searchName: "",
+            selectSearch: ""
         };
     }
 
@@ -61,18 +63,41 @@ export default class CustomerList extends Component{
         });
     }
 
-    searchName(){
-        CustomerDataService.findByName(this.state.searchName)
-        .then(response => {
-            this.setState({
-                customers: response.data
-            });
-            console.log(response.data);
-        })
-        .catch(e => {
-            console.log(e);
+
+    onChangeSelect(e) {
+        const selectSearch = e.target.value;
+        this.setState({
+            selectSearch: selectSearch
         });
     }
+
+    searchName(){
+        if (this.state.selectSearch === "name") {
+            CustomerDataService.findByFirstName(this.state.searchName)
+            .then(response => {
+                this.setState({
+                    customers: response.data
+                });
+                console.log(response.data);
+            })
+            .catch(e => {
+                console.log(e);
+            });
+        } else if ( this.state.selectSearch === "email" ) {
+            CustomerDataService.findByEmail(this.state.searchName)
+            .then(response => {
+                this.setState({
+                    customers: response.data
+                });
+                console.log(response.data);
+            })
+            .catch(e => {
+                console.log(e);
+            });
+        } 
+        
+    }
+
 
         render(){
             const { searchName, customers, currentCustomer, currentIndex} = this.state;
@@ -87,10 +112,15 @@ export default class CustomerList extends Component{
                             <input
                             type="text"
                             className="form-control"
-                            placeholder="Search by Email"
+                            placeholder="Search by"
                             value = {searchName}
                             onChange={this.onChangeSearchName}
                             />
+                            <select onChange={this.onChangeSelect} className="custom-select input-group-append">
+                                <option defaultValue="name">Search By</option>
+                                <option value="email">E-Mail</option>
+                                <option value="name">Name</option>
+                            </select>
                             <div className="input-group-append">
                                 <button
                                 className="btn btn-outline-secondary"
@@ -110,7 +140,8 @@ export default class CustomerList extends Component{
                                     (index === currentIndex ? "active" : "")}
                                     onClick={()=> this.setActiveCustomer(customer, index)}
                                     key= {index}>
-                                        {customer.firstname}
+                                        <div>{customer.firstname}{" "}{customer.lastname}</div>
+                                        <div className="small">{customer.email}</div>
                                 </li>
                             ))}
                         </ul>
@@ -141,14 +172,9 @@ export default class CustomerList extends Component{
                                 </div>
                                 <div>
                                     <label>
-                                        <strong>Last Order:</strong>
-                                    </label>{" "}
-                                    <ul>
-                                       
-                                    { currentCustomer.last_order && currentCustomer.last_order.products.map((value, index) => {
-                                        return <li key={index}>{value.product_name}</li>
-                                    })}
-                                    </ul>
+                                        <strong>Team:</strong>
+                                    </label>{" "}<span class="badge badge-info">{ currentCustomer.team}</span>
+                                    
                                 </div>
                             </div>
                         ):(

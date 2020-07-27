@@ -1,10 +1,9 @@
-import React,{Component} from "react";
-import TemplateDataService from "../services/template.service";
+import React from "react";
+import TeamDataService from "../services/team.service";
 import {Link} from "react-router-dom";
 
 
-export default class TemplateList extends Component{
-
+class TeamList extends React.Component{
     constructor(props) {
         super(props);
         this.onChangeSearchName = this.onChangeSearchName.bind(this);
@@ -34,7 +33,7 @@ export default class TemplateList extends Component{
     }
 
     retrieveTemplates(){
-        TemplateDataService.getAll()
+        TeamDataService.getAll()
         .then(response => {
             this.setState({
                 templates: response.data
@@ -61,12 +60,10 @@ export default class TemplateList extends Component{
         });
     }
 
-    // removeAllTemplates(){
-    //     TemplateDataService.dele
-    // }
+
 
     searchName(){
-        TemplateDataService.findByName(this.state.searchName)
+        TeamDataService.findByName(this.state.searchName)
         .then(response => {
             this.setState({
                 templates: response.data
@@ -84,7 +81,7 @@ export default class TemplateList extends Component{
             return(
                 <div id="templateList" className="list row">
                     <div className="title col-md-12">
-                        <h4>Templates</h4>
+                        <h4>Teams</h4>
                     </div>
                     <div id="searchbar-customers" className="col-md-12">
                         <div className="input-group mb-3">
@@ -106,7 +103,7 @@ export default class TemplateList extends Component{
                         </div>
                     </div>
                     <div className="col-md-6">
-                        <h4>Template List</h4>
+                        <h4>Team List</h4>
 
                         <ul className="list-group template-list">
                             {templates && templates.map((template, index) =>(
@@ -122,7 +119,7 @@ export default class TemplateList extends Component{
                     <div className="col-md-6">
                         {currentTemplate ?(
                             <div>
-                                <h4>Template</h4>
+                                <h4>Team</h4>
                                 <div>
                                     <label>
                                         <strong>
@@ -137,13 +134,10 @@ export default class TemplateList extends Component{
                                     </label>{" "}
                                     {currentTemplate.description}
                                 </div>
+                                
                                 <Link
-                                to={"/templates/" + currentTemplate.id}
-                                className="btn btn-success btn-in-list">Edit</Link>
-
-                                <Link
-                                to={"/preview/" + currentTemplate.id}
-                                className="btn btn-primary btn-in-list">Preview</Link>
+                                to={"/teams/" + currentTemplate.id}
+                                className="btn btn-success btn-in-list">Edit & Add Members</Link>
 
                             </div>
                         ):(
@@ -158,3 +152,5 @@ export default class TemplateList extends Component{
             );
         }
 }
+
+export default TeamList;

@@ -1,15 +1,17 @@
 import React, { Component } from "react";
-import TemplateDataService from "../services/template.service";
+import TeamDataService from "../services/team.service";
+import CustomerDataService from "../services/customer.service";
 
 
-export default class AddTemplate extends Component {
+class AddTeam extends React.Component{
      
     constructor(props) {
         super(props);
         this.onChangeName = this.onChangeName.bind(this);
         this.onChangeDescription = this.onChangeDescription.bind(this);
-        this.onChangeContent = this.onChangeContent.bind(this);
+        this.onChangeMembers = this.onChangeContent.bind(this);
         this.saveTemplate = this.saveTemplate.bind(this);
+        this.retrieveCustomers = this.retrieveCustomers.bind(this);
         this.newTemplate = this.newTemplate.bind(this);
     
 
@@ -17,7 +19,7 @@ export default class AddTemplate extends Component {
             id:null,
             name: "",
             description: "",
-            content: "",
+            members: [],
             submitted: false 
         };
     }
@@ -42,6 +44,25 @@ export default class AddTemplate extends Component {
         });
     }
 
+    onChangeMembers(e){
+        this.setState({
+            members:e.target.value
+        });
+    }
+
+    retrieveCustomers(){
+        CustomerDataService.getAll()
+        .then(response => {
+            this.setState({
+                customers: response.data
+            });
+            console.log(response.data);
+        })
+        .catch(e => {
+            console.log(e);
+        });
+    }
+
     saveTemplate(){
         let data = {
             name: this.state.name,
@@ -49,7 +70,7 @@ export default class AddTemplate extends Component {
             content: this.state.content
         };
 
-        TemplateDataService.create(data)
+        TeamDataService.create(data)
         .then(response => {
             this.setState({
                 id: response.data.id,
@@ -90,7 +111,7 @@ export default class AddTemplate extends Component {
                     </div>
                 ) : (
                     <div id="formContainerAdd" className="container">
-                        <div class="row">
+                        <div className="row">
                             <h4>Add a new template</h4>
                             <div className="form-group col-md-12">
                                 <label htmlFor="name">Name</label>
@@ -115,20 +136,11 @@ export default class AddTemplate extends Component {
                                     onChange={this.onChangeDescription}
                                     name="description"
                                 />
-                            </div>
-                            <div className="form-group col-md-12">
-                                <label htmlFor="content">Content</label>
-                                <textarea
-                                    type="text"
-                                    className="form-control"
-                                    id="content"
-                                    required
-                                    value={this.state.content}
-                                    onChange={this.onChangeContent}
-                                    name="content"
-                                />
-                                <button onClick={this.saveTemplate} className="btn btn-success">Submit</button>
-                            </div>
+                            </div>   
+                        </div>
+                        
+                       <div className="form-group col-md-12">
+                            <button onClick={this.saveTemplate} className="btn btn-success">Submit</button>
                         </div>
                     </div>
                 )}
@@ -136,3 +148,5 @@ export default class AddTemplate extends Component {
         );
     }
 }
+
+export default AddTeam;
