@@ -78,7 +78,6 @@ class Team extends React.Component{
             this.setState({
                 currentTemplate:response.data
             });
-            console.log(response.data);
             this.retrieveCustomers(response.data.name);
             this.getSomeMembers(response.data.name);
         })
@@ -92,7 +91,6 @@ class Team extends React.Component{
             this.state.currentTemplate.id,
             this.state.currentTemplate
         ).then(response =>{
-            console.log(response.data);
             this.setState({
                 message:"template updated successfully"
             });
@@ -105,14 +103,12 @@ class Team extends React.Component{
     retrieveCustomers(name){
         CustomerDataService.getAll()
         .then(response => {
-            console.log("all members but the ones currently on team");
             var customersfiltered =  response.data.filter(function(customer) {
                 return customer.team !== name;
             });
             this.setState({
                 customers: customersfiltered
             });
-            console.log(customersfiltered);
            
         })
         .catch(e => {
@@ -121,14 +117,11 @@ class Team extends React.Component{
     }
 
     getSomeMembers(name) {
-        console.log(name);
         CustomerDataService.getSome(name)
         .then(response =>{
             this.setState({
                 members:response.data
             });
-            console.log("MEMBERS OF THIS TEAM");
-            console.log(response);
         })
         .catch(e => {
             console.log(e);
@@ -148,7 +141,6 @@ class Team extends React.Component{
             customer.id,
             customer
         ).then(response =>{
-            console.log(response.data);
             this.setState({
                 message:"team updated successfully"
             });
@@ -161,13 +153,11 @@ class Team extends React.Component{
     }
 
     removeTeamMember(customer,index){
-        console.log("Remove team member")
         customer.team = "";
         CustomerDataService.update(
             customer.id,
             customer
         ).then(response =>{
-            console.log(response.data);
             this.setState({
                 message:"team member deleted successfully"
             });
@@ -183,7 +173,6 @@ class Team extends React.Component{
     deleteTemplate(){
         TeamDataService.delete(this.state.currentTemplate.id)
         .then(response => {
-            console.log(response.data);
             this.props.history.push('/teams')
         })
         .catch(e => {
@@ -211,15 +200,12 @@ class Team extends React.Component{
         if (this.state.selectSearch === "name") {
             CustomerDataService.findByFirstName(this.state.searchName)
             .then(response => {
-                console.log(response);
                 var customersfiltered =  response.data.filter(function(customer) {
                     return customer.team !== team;
                 });
-                console.log(customersfiltered);
                 this.setState({
                     customers: customersfiltered
                 });
-                console.log(response.data);
             })
             .catch(e => {
                 console.log(e);
@@ -227,15 +213,12 @@ class Team extends React.Component{
         } else if (this.state.selectSearch === "email") { 
             CustomerDataService.findByEmail(this.state.searchName)
             .then(response => {
-                console.log(response);
                 var customersfiltered =  response.data.filter(function(customer) {
                     return customer.team !== team;
                 });
-                console.log(customersfiltered);
                 this.setState({
                     customers: customersfiltered
                 });
-                console.log(response.data);
             })
             .catch(e => {
                 console.log(e);
